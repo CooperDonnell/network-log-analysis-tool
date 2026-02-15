@@ -13,6 +13,7 @@ Parses Linux authentication and firewall logs to identify failed login attempts,
 1. Clone the repository
 
 git clone https://github.com/yourusername/network-log-analysis-tool
+
 cd network-log-analysis-tool
 
 2. Place your log files inside the `logs/` folder
