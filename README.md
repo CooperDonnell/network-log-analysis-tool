@@ -34,3 +34,8 @@ python3 loganalysis.py
 
 ## Skills demonstrated
 Python, log parsing, Linux auth logging, basic threat hunting
+
+## Example output
+Unique scanning IPs: 15838
+Unique overlap IPs (invalid login + scan): 51
+Top 10 overlap IPs: ['104.248.168.145', '106.12.222.80', '107.189.31.191', '128.199.13.112', '129.244.0.252', '139.135.229.24', '141.98.10.179', '141.98.10.202', '141.98.10.206', '141.98.10.81']
