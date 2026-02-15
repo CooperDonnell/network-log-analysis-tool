@@ -16,7 +16,7 @@ git clone https://github.com/yourusername/network-log-analysis-tool
 
 cd network-log-analysis-tool
 
-2. Place your log files inside the `logs/` folder
+2. Place your log files inside the `logs` folder
 
 Example files:
 - auth.log
