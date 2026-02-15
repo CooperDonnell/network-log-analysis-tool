@@ -5,7 +5,7 @@ Parses Linux authentication and firewall logs to identify failed login attempts,
 
 ## What it does
 - Extracts login timestamps for a given username from auth.log files
-- Counts invalid user login attempts (Invalid user ...)
+- Summarizes repeated invalid login attempts (SSH brute-force behavior)
 - Finds IPs that appear in both failed login attempts and UFW blocked scans
 
 ## How to run
