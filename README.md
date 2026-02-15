@@ -9,10 +9,21 @@ Parses Linux authentication and firewall logs to identify failed login attempts,
 - Finds IPs that appear in both failed login attempts and UFW blocked scans
 
 ## How to run
-1. Put your log files in a folder like:
-project-1-network-log-analysis-CooperDonnell/log/
 
-2. Run:
+1. Clone the repository
+
+git clone https://github.com/yourusername/network-log-analysis-tool
+cd network-log-analysis-tool
+
+2. Place your log files inside the `logs/` folder
+
+Example files:
+- auth.log
+- auth.log.1
+- ufw.log
+
+3. Run the script
+
 python3 loganalysis.py
 
 ## Key functions
