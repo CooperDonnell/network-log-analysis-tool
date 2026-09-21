@@ -1,41 +1,99 @@
-# Network Log Analysis Tool (Python)
+# Network Log Analysis Tool
 
-## Overview
-Parses Linux authentication and firewall logs to identify failed login attempts, invalid usernames, and IPs associated with scanning activity.
+A dependency-free Python command-line tool for analyzing Linux authentication and UFW firewall logs. It identifies repeated invalid-user login attempts and correlates their source IPs with addresses blocked by UFW.
 
-## What it does
-- Extracts login timestamps for a given username from auth.log files
-- Summarizes repeated invalid login attempts (SSH brute-force behavior)
-- Finds IPs that appear in both failed login attempts and UFW blocked scans
+## Analysis workflow
 
-## How to run
+1. Read current and rotated `auth.log*` and `ufw.log*` files, including gzip-compressed rotations.
+2. Extract invalid usernames and source IPs from OpenSSH authentication events.
+3. Extract source IPs from `[UFW BLOCK]` firewall events.
+4. Intersect the two IP sets to highlight hosts associated with both authentication attacks and blocked network traffic.
 
-1. Clone the repository
+An overlapping address is an investigation lead, not proof by itself that the host is malicious. Validate the result against timestamps, destination ports, successful logons, asset context, and other telemetry.
 
-git clone https://github.com/yourusername/network-log-analysis-tool
+## Requirements
 
+- Python 3.9 or later
+- No third-party packages
+
+## Run the tool
+
+Clone the repository and place logs in the included `logs` directory:
+
+```bash
+git clone https://github.com/CooperDonnell/network-log-analysis-tool.git
 cd network-log-analysis-tool
+python3 log_analysis.py --logs-dir logs
+```
 
-2. Place your log files inside the `logs` folder
+Supported names include:
 
-Example files:
-- auth.log
-- auth.log.1
-- ufw.log
+```text
+logs/auth.log
+logs/auth.log.1
+logs/auth.log.2.gz
+logs/ufw.log
+logs/ufw.log.1
+logs/ufw.log.2.gz
+```
 
-3. Run the script
+Query authentication timestamps associated with one username:
 
-python3 loganalysis.py
+```bash
+python3 log_analysis.py --logs-dir logs --user tmoore
+```
 
-## Key functions
-- get_user_auth_times(user_id)
-- get_invalid_logins()
-- compare_invalid_IPs()
+Produce machine-readable output:
 
-## Skills demonstrated
-Python, log parsing, Linux auth logging, basic threat hunting
+```bash
+python3 log_analysis.py --logs-dir logs --json
+```
 
-## Example output
-Unique scanning IPs: 15838
-Unique overlap IPs (invalid login + scan): 51
-Top 10 overlap IPs: ['104.248.168.145', '106.12.222.80', '107.189.31.191', '128.199.13.112', '129.244.0.252', '139.135.229.24', '141.98.10.179', '141.98.10.202', '141.98.10.206', '141.98.10.81']
+See all options:
+
+```bash
+python3 log_analysis.py --help
+```
+
+## Output
+
+The summary reports the files processed, invalid-user attempt totals, unique usernames and source IPs, UFW-blocked IPs, addresses present in both sources, and the most frequently attempted usernames.
+
+The original eight-file project dataset produced:
+
+```text
+Invalid login attempts: 19,037
+Unique invalid usernames: 3,652
+Unique UFW blocked IPs: 15,838
+Unique overlap IPs: 51
+```
+
+The original logs are not redistributed because they are large and may contain environment-specific data. Place authorized Linux logs in `logs/` to reproduce the analysis on another dataset.
+
+## Use as a Python module
+
+```python
+from log_analysis import analyze_logs, compare_invalid_ips, get_invalid_logins
+
+result = analyze_logs("logs")
+print(result.invalid_login_attempts)
+print(compare_invalid_ips("logs"))
+print(get_invalid_logins("logs"))
+```
+
+The original `compare_invalid_IPs()` spelling remains available as a backward-compatible alias.
+
+## Tests
+
+The tests exercise parsing, correlation, rotated gzip logs, JSON output, and error handling:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+## Limitations and next steps
+
+- The parser targets common OpenSSH `Invalid user ... from ...` and UFW `[UFW BLOCK] ... SRC=...` formats.
+- IP overlap is not time-windowed, so events far apart in time may be correlated.
+- The tool performs batch analysis rather than real-time monitoring.
+- Future improvements could add timestamp normalization, destination-port analysis, successful-login correlation, allowlists, CSV export, and alert scoring.
