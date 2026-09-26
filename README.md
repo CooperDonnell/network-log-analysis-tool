@@ -1,6 +1,4 @@
-Copy and paste this as the complete `README.md`:
 
-````markdown
 # Linux Authentication and Firewall Log Analyzer
 
 A dependency-free Python threat-hunting CLI that analyzes Linux OpenSSH and UFW logs, identifies repeated invalid-user login attempts, and correlates source IPs across authentication and firewall activity.
