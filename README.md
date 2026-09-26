@@ -180,4 +180,3 @@ Potential improvements include:
 ## Skills demonstrated
 
 Python · Linux logging · OpenSSH · UFW · Log parsing · Threat hunting · Cross-source correlation · CLI design · JSON reporting · Automated testing
-````
